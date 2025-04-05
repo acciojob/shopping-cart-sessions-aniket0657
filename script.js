@@ -15,11 +15,11 @@ function renderProducts() {
   products.forEach(product => {
     const li = document.createElement("li");
     li.textContent = `${product.name} - $${product.price}`;
-    
+
     const button = document.createElement("button");
     button.textContent = "Add to Cart";
     button.onclick = () => addToCart(product);
-    
+
     li.appendChild(button);
     productList.appendChild(li);
   });
@@ -27,18 +27,29 @@ function renderProducts() {
 
 function addToCart(product) {
   let cart = getCart();
+
+  // Prevent duplication in cart if needed
+  // const existing = cart.find(p => p.id === product.id);
+  // if (!existing) {
   cart.push(product);
+  // }
+
   sessionStorage.setItem("cart", JSON.stringify(cart));
   renderCart();
 }
 
 function getCart() {
-  return JSON.parse(sessionStorage.getItem("cart")) || [];
+  try {
+    const data = sessionStorage.getItem("cart");
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
 }
 
 function renderCart() {
   cartList.innerHTML = "";
-  let cart = getCart();
+  const cart = getCart();
   cart.forEach(item => {
     const li = document.createElement("li");
     li.textContent = `${item.name} - $${item.price}`;
@@ -53,6 +64,8 @@ function clearCart() {
 
 clearCartBtn.addEventListener("click", clearCart);
 
-// Initialize page
-renderProducts();
-renderCart();
+// Restore cart state before render
+window.addEventListener("load", () => {
+  renderProducts();
+  renderCart();
+});
