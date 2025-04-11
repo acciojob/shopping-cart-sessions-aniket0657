@@ -26,18 +26,17 @@ function renderProducts() {
 }
 
 function addToCart(product) {
-  let cart = getCart();
+    let cart = getCart();
 
-  // Prevent duplication in cart if needed
-  // const existing = cart.find(p => p.id === product.id);
-  // if (!existing) {
-  cart.push(product);
-  // }
+    // Prevent duplication in cart
+    const existing = cart.find(p => p.id === product.id);
+    if (!existing) {
+        cart.push(product);
+    }
 
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    renderCart();
 }
-
 function getCart() {
   try {
     const data = sessionStorage.getItem("cart");
